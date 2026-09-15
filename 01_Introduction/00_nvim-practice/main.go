@@ -49,4 +49,6 @@ func main() {
 	if err := acc.Withdraw(9999); err != nil {
 		fmt.Println("Error:", err)
 	}
+
+	say_hello()
 }
