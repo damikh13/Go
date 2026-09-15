@@ -9,6 +9,7 @@ to know a type: Printf("%T") +
 a, b = 10, 2.0
 int(2.6) -> 2
 const's
+const pi = 3.14 <- without := and int!
 const full_name = first_name + " " + last_name <- вычислится во время компиялции!
 
 bool
@@ -51,6 +52,6 @@ func main() {
 	// age_ptr := &cond
 	// fmt.Printf("type(%d) = %T", age_ptr, age_ptr)
 
-	f := 12.34
-	fmt.Printf("type(f) = %T\n", f)
+	// f := 12.34
+	// fmt.Printf("type(%v) = %T\n", f, f)
 }
