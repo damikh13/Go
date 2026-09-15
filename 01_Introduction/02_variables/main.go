@@ -21,7 +21,7 @@ uint <- 32/64 => 2
 int8, ..., int64
 uint8, ..., uint64
 
-byte = int8
+byte = uint8
 rune = int32
 
 float32

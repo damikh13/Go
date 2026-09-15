@@ -13,7 +13,7 @@ Go быстро компилируется и исполняется. Проек
 - int, uint ← в зависимости от разрядности системы
 - int8, int16, int32, int64
 - uint8, …, uint64
-- byte = int8
+- byte = uint8
 - rune = int32
 - float32, float64 (default)
 - complex64, complex128 (10.9 + 13.4i)
