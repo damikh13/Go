@@ -189,3 +189,79 @@ default:
 	fmt.Println("unknown")
 }
 ```
+
+## 1.4. for
+
+Обычное объявление цикла:
+
+```go
+for i := 0; i < 10; i++ {
+	fmt.Println(i) // 0 1 2 ... 9
+}
+```
+
+```go
+for i := range 10 {
+	fmt.Println(i) // 0 1 2 ... 9
+}
+```
+
+Нет цикла while. Вместо этого можем скипать части `for`’а:
+
+```go
+i := 0
+for i < 10 {
+	...
+	i++
+}
+```
+
+```go
+cond := true
+for { // while true
+	...
+	if cond {
+		break
+	}
+}
+
+```
+
+Есть встроенная итерация по различным структуркам. Важно помнить, что итератор и значение — это копии, а не ссылки. Поменяв их внутри цикла, не получим изменения оригинального объекта:
+
+```go
+nums := []int{1,2,3,4}
+for i, v := range nums {
+	fmt.Println("i =", i, "v =", v)
+	v = 100; // бесполезно!
+}
+```
+
+```go
+mp := map[string][int]{"a": 1, "b": 2}
+for k, v := range mp {
+	fmt.Printf("k = %q, v = %v", k, v)
+}
+```
+
+```go
+str := "hello"
+for i, c := range str {
+	fmt.Printf("i = %v, c = %v (%c).\n", i, c, c)
+}
+```
+
+Если попробуем пройтись по динамическому массиву (slice’у) через range и внутри цикла увеличить его длину, итерироваться будем по до конца старой.
+
+Можем прерывать внешний цикл, используя label’ы:
+
+```go
+outer:
+for i := range 5 {
+	for j := range 5 {
+		if cond {
+			continue outer // skip to next i, not j!
+		}
+	}
+}
+```
