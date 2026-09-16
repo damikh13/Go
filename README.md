@@ -138,3 +138,54 @@ fmt.Printf("The foolowing sentence is either %v or %v.\n", true, false)
   	fmt.Printf("%v\n", pointer_to_pt) // &{3 4}
   	fmt.Printf("%p\n", pointer_to_pt) // 0x605168c7c110
   ```
+
+## 1.3. if, switch
+
+Базовый синтаксис таков:
+
+```go
+if A && !B { // !B начнёт вычисляться только в том случае, если A == true!
+	...
+} else if C {
+	...
+} else {
+	...
+}
+```
+
+`else` должен начинаться на той же строке, что и закрывающая скобка!
+
+Фишка Go: если переменная используется только внутри блока if, можем проинициализировать её исключительно внутри него:
+
+```go
+if weight := 10; weight > 10 {
+	fmt.Println("obese")
+} else {
+	fmt.Println("scrawny")
+}
+
+fmt.Println(weight) // ошибка! нет такой
+
+```
+
+Есть switch’и. В них тоже есть локальная инициализация:
+
+```go
+switch x := 10; {
+case x > 10:
+	fmt.Println("big")
+default:
+	fmt.Println("small")
+}
+```
+
+```go
+switch day := "alskdjasld"; day {
+case "Mon", "Tue", "Wed", "Thu", "Fri":
+	fmt.Println("work day :(")
+case "Sat", "Sun":
+	fmt.Println("weekend day :)")
+default:
+	fmt.Println("unknown")
+}
+```
