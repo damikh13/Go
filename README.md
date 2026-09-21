@@ -14,7 +14,7 @@ Go быстро компилируется и исполняется. Проек
 - int8, int16, int32, int64
 - uint8, …, uint64
 - byte = uint8
-- rune = int32
+- rune = int32 (инициализируется при помощи `x := 'A'`)
 - float32, float64 (default)
 - complex64, complex128 (10.9 + 13.4i)
 - указатели ()
@@ -246,8 +246,8 @@ for k, v := range mp {
 
 ```go
 str := "hello"
-for i, c := range str {
-	fmt.Printf("i = %v, c = %v (%c).\n", i, c, c)
+for i, r := range str {
+	fmt.Printf("idx = %v, rune = %v (%c).\n", i, r, r)
 }
 ```
 
