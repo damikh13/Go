@@ -9,7 +9,9 @@ Go быстро компилируется и исполняется. Проек
 Основные типы не составных переменных:
 
 - bool
-- string
+- string (interpreted read-only slice of bytes)
+  - “hello\n” → “hello”
+  - `hello\n` -> `hello\n`
 - int, uint ← в зависимости от разрядности системы
 - int8, int16, int32, int64
 - uint8, …, uint64
