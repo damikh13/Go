@@ -544,3 +544,127 @@ e := Employee{
 
 Внутренняя структура вообще не имеет понятия о том, что она является частью чего-то!
 ![](images/01_07_01.svg)
+
+## 1.7.
+
+Для реализации полиморфизма используются интерфейсы. **Интерфейс** — это просто набор методов. Чтобы структура стала связана с интерфейсом, она должна реализовать все методы с теми же сигнатурами:
+
+```go
+type Shape interface {
+	Area() float64
+	Perimeter() float64
+}
+
+type Rectangle struct { W, H float64 }
+func (r Rectangle) Area() float64 { return r.W * r.H }
+func (r Rectangle) Perimeter() float64 { return 2 * (r.W + r.H) }
+
+type Circle struct { R float64 }
+func (c Circle) Area() float64 { return math.Pi * c.R * c.R }
+func (c Circle) Perimeter() { return 2 * math.Pi * c.R }
+
+func printShapeInfo(s **Shape**) { fmt.Printf("area = %3.f, perimeter = %3.f\n", s.Area(), s.Perimeter()) }
+
+rect := Rectangle{3, 4}
+printShapeInfo(rect) // 12 14
+circle := Circle{3}
+printShapeInfo(rect) // 12 14
+
+var rect2 **Shape** = Rectangle{2, 8}
+```
+
+Частая ошибка при использовании интерфейсов:
+
+- если объявили метод, работающий с объектом по указателю, то мы должны создавать объекты только через указатели
+- (если объявили обычный метод, который работает с объектом по значению, то есть копирует его, то оба вариант создания объекта подойдут — и `… := Rect{}`, и `… := new(Rect)`)
+
+Если у нас внутри есть структурка, в которой реализован метод, то весь объект будет удовлетворять интерфейсу.
+
+Стоит делать интерфейсы как можно меньше. В идеале они вообще должны состоять из всего одного метода. Тогда очень много классов станут неявно их имплементировать.
+
+К примеру, в пакете `fmt` есть интерфейс `Stringer`, состоящий из всего одного метода — `String() string`.
+
+Стандартная функция `fmt.Println()` внутри проверяет, является ли то, что мы хотим напечатать, объектом `Stringer`. Если является, то просто выводит `obj.String()`. Поэтому мы можем сделать кастомный вывод наших структур:
+
+```go
+type Person struct {
+	Name string
+	Age int
+}
+
+func (p Person) String() string {
+	return fmt.Sprintf("%s (%d)", p.Name, p.Age)
+} // теперь отзываемся и на Stringer!
+
+p := Person{"John", 30}
+fmt.Println(p) // John (30), а не {John 30}
+```
+
+Также можно написать общий интерфейс для всего, что что-то куда-то пишет:
+
+```go
+type Writer interface { Write(p []byte) (n int, err error) }
+```
+
+Тогда, реализовав метод Write() у разных структур, сможем использовать такой полиморфизм:
+
+```go
+
+```
+
+Чтобы проверить тип переменной какого-то интерфейса, используем `obj.()`:
+
+```go
+var circ Shape = Circle{8}
+if c, ok := circ.(Circle); ok {
+	fmt.Println("radius:", c.R)
+}
+```
+
+```go
+switch v := circ.(type) {
+case Circle:
+	fmt.Println()
+}
+```
+
+Или крутой синтаксис (пусть `nil` имеет тип `*Rectangle`, может ли такой `nil` быть присвоен объекту класса `Shape`?):
+
+```go
+var _ Shape = (*Rectangle)(nil) // скомпилится, если есть связь, иначе выдаст ошибку
+```
+
+Часто можно увидеть, что интерфейс является составной частью структурки, чтобы избавиться от зависимости от конкретного класса (вместо неё получается зависимость от общего интерфейса):
+
+```go
+type Notifier interface { Notify(msg string) error }
+type OrderService struct {
+	...
+	notifier Notifier // имеем общий интерфейс
+}
+func NewOrderService(n Notifier) *OrderService {
+	return &OrderService{..., n}
+}
+
+type EmailNotifier struct {}
+func (EmailNotifier) Notify (msg String) error { ... return nil }
+
+type SMSNotifier struct {}
+func (SMSNotifier) Notify (msg String) error { ... return nil }
+
+svc1 := NewOrderSerivce(EmailNotifier{})
+svc2 := NewOrderService(SMSNotifier{})
+svc_t := NewOrderSerivce(FakeNotifier{})
+```
+
+Наконец, есть другой вид интерфейсов — интерфейсы типов. Их можно использовать с generic’ами (как template<typename T> в C++):
+
+```go
+type Number interface {
+	~int | ~int64 | ~float64
+}
+
+func sumT Number T {
+	...
+}
+```
