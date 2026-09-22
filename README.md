@@ -637,15 +637,20 @@ writeGreeting(...)
 
 ```go
 var circ Shape = Circle{8}
+circ.R = 10 // ошибка! у абстрактного Shape может и не быть радиуса!
 if c, ok := circ.(Circle); ok {
-	fmt.Println("radius:", c.R)
+	fmt.Println("radius:", c.R) // а теперь всё хорошо!
 }
 ```
 
 ```go
-switch v := circ.(type) {
+switch shape := circ.(type) {
 case Circle:
-	fmt.Println()
+	fmt.Println("radius:", shape.R)
+case Rectangle:
+	fmt.Printf("W = %d, H = %d\n", shape.W, shape.H)
+default:
+	fmt.Println("unknown shape type")
 }
 ```
 

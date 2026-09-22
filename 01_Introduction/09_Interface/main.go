@@ -88,6 +88,7 @@ func main() {
 	fmt.Println(p) // John (30)
 
 	var circ2 Shape = Circle{4}
+	// fmt.Println(circ2.R) // ошибка!
 	if c, ok := circ2.(Circle); ok {
 		fmt.Printf("type(circle = %v) = Circle\n", c)
 	}
@@ -95,4 +96,18 @@ func main() {
 	nums := []float64{1, 2.5, 3}
 	fmt.Println(sum(1, 2.5, 3))
 	fmt.Println(sum(nums...))
+
+	var circ3 Shape = Circle{10}
+	if c, ok := circ3.(Circle); ok {
+		fmt.Printf("circle!! %+v\n", c)
+	}
+
+	switch shape := circ3.(type) {
+	case Rectangle:
+		fmt.Println("rect", shape.W, shape.H)
+	case Circle:
+		fmt.Println("circle", shape.R)
+	default:
+		fmt.Println("unknown")
+	}
 }
