@@ -664,6 +664,8 @@ if c, ok := circ.(Circle); ok {
 }
 ```
 
+- `c` — новый объект, появившийся в результате попытки привести переменную circ к типу Circle. Внутри if’a используется именно он!
+
 ```go
 switch shape := circ.(type) {
 case Circle:
