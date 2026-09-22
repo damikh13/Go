@@ -729,3 +729,79 @@ func doSomething(fail bool) error {
 	return nil // явно прописали
 }
 ```
+
+## 1.8. generics
+
+Раньше, чтобы определить функцию для нескольких типов, приходилось делать несколько разных функций:
+
+```go
+func SumInt(nums []int) int {
+	var total int
+	for _, val := range nums {
+		total += val
+	}
+	return total
+}
+```
+
+```go
+numsInt := []int{1, 2, 3, 4, 5}
+fmt.Println("SumInt(numsInt) =", SumInt(numsInt)) // 15
+```
+
+```go
+func SumFloat(nums []float64) float64 {
+	var total float64
+	for _, val := range nums {
+		total += val
+	}
+	return total
+}
+```
+
+```go
+numsFloat := []float64{1.1, 2.2, 3.3, 4.4, 5.5}
+fmt.Println("SumFloat(numsFloat) =", SumFloat(numsFloat)) // 16.5
+```
+
+Начиная с версии 1.18, в Go появилась возможность писать общие функции:
+
+```go
+func SumNumsT int | float64 T {
+	var total T
+	for _, val := range nums {
+		total += val
+	}
+	return total
+}
+```
+
+```go
+fmt.Println("SumNums(numsInt) =", SumNums(numsInt))
+fmt.Println("SumNums(numsFloat) =", SumNums(numsFloat))
+
+```
+
+На самом деле, часть внутри квадратных скобок можно вынести в отдельный интерфейс:
+
+```go
+type Number interface {
+	~int | int8 | int16 | ~float32 | ~float64
+}
+```
+
+- или int8, или любой кастомный тип, содержащий в себе int (`type CustomInt int`), или int16, или …
+
+```go
+func SumT Number T { ... }
+```
+
+Помимо того, можно обобщать не только функции, но и структуры:
+
+```go
+type [T Number]MyStruct **struct {**
+	items []T
+**}**
+```
+
+Особое место — пустой интерфейс.
