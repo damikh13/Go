@@ -871,11 +871,17 @@ func main() {
 ```jsx
 try {
   const user = getUser();
-  const profile = getUserProfile();
+  try {
+    const profile = getUserProfile();
+  } catch (err) {
+    console.log(err);
+  }
 } catch (err) {
   console.log(err);
 }
 ```
+
+> _Получается витвистая структура._
 
 > _Не можем отделить обработку второго исключения от обработки первого. Приходится запихивать в один try-блок._
 
