@@ -377,7 +377,7 @@ type Person struct {
 	name string
 }
 
-func **(p Person)** PrintName() {
+func (p Person) PrintName() {
 	fmt.Prinln(p.name)
 }
 ```
@@ -405,10 +405,10 @@ func readFile(filePath string) {
 	defer f.Close()
 	defer func() {
 		fmt.Println(1)
-	}**()**
+	}()
 	defer func() {
 		fmt.Println(2)
-	}**()**
+	}()
 }
 ```
 
@@ -578,14 +578,14 @@ type Circle struct { R float64 }
 func (c Circle) Area() float64 { return math.Pi * c.R * c.R }
 func (c Circle) Perimeter() { return 2 * math.Pi * c.R }
 
-func printShapeInfo(s **Shape**) { fmt.Printf("area = %3.f, perimeter = %3.f\n", s.Area(), s.Perimeter()) }
+func printShapeInfo(s Shape) { fmt.Printf("area = %3.f, perimeter = %3.f\n", s.Area(), s.Perimeter()) }
 
 rect := Rectangle{3, 4}
 printShapeInfo(rect) // 12 14
 circle := Circle{3}
 printShapeInfo(rect) // 12 14
 
-var rect2 **Shape** = Rectangle{2, 8}
+var rect2 Shape = Rectangle{2, 8}
 ```
 
 **Частая ошибка при использовании интерфейсов**!
@@ -633,7 +633,7 @@ type Writer interface { Write(p []byte) (n int, err error) }
 Тогда, если у разных структур (os.Stdout, os.File, bytes.Buffer) реализован метод `Write()`, можем использовать такой полиморфизм:
 
 ```go
-func writeGreeting(**w io.Writer**, name string) {
+func writeGreeting(w io.Writer, name string) {
 	fmt.Fprintf(w, "Hello, %s!", name)
 }
 
@@ -733,7 +733,7 @@ func doSomething(fail bool) error {
 Последний момент — интерфейсы можно объединять:
 
 ```go
-type ReaderWriter ****interface {
+type ReaderWriter interface {
 	Reader
 	Writer
 }
@@ -754,7 +754,7 @@ type B interface {
 
 type C interface {
     A
-    B  // ❌ compile error: duplicate method Foo with different signatures
+    B  // compile error: duplicate method Foo with different signatures
 }
 ```
 
@@ -827,9 +827,9 @@ func SumT Number T { ... }
 Помимо того, можно обобщать не только функции, но и структуры:
 
 ```go
-type [T Number]MyStruct **struct {**
+type [T Number]MyStruct struct {
 	items []T
-**}**
+}
 ```
 
 Особое место — пустой интерфейс.
