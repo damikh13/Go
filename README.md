@@ -692,18 +692,6 @@ svc2 := NewOrderService(SMSNotifier{})
 svc_t := NewOrderSerivce(FakeNotifier{})
 ```
 
-Наконец, есть другой вид интерфейсов — интерфейсы типов. Их можно использовать с generic’ами (как template<typename T> в C++):
-
-```go
-type Number interface {
-	~int | ~int64 | ~float64
-}
-
-func sumT Number T {
-	...
-}
-```
-
 Если где-то ожидается указатель на переменную общего типа (напр., error), то следует возвращать явный `nil`, а не `var x *SpecificType = nil`:
 
 Пример плохого кода:
