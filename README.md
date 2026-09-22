@@ -694,3 +694,41 @@ func sumT Number T {
 	...
 }
 ```
+
+Если где-то ожидается указатель на переменную общего типа (напр., error), то следует возвращать явный `nil`, а не `var x *SpecificType = nil`:
+
+Пример плохого кода:
+
+```go
+type MyError struct{ msg string }
+func (e *MyError) Error() string { return e.msg }
+
+func doSomething(fail bool) error {
+    var err *MyError // nil pointer
+    if fail {
+        err = &MyError{msg: "something broke"}
+    }
+    return err // баг!
+}
+```
+
+Вроде бы, если нет никакого fail, то возвращаем указатель на nil типа *MyError. Значит, такая проверка должна сработать, но она не работает:
+
+```go
+err := doSomething(false) // не должно быть fail'а
+// вроде бы, err = nil
+if err != nil {
+    fmt.Println("got an error!") // prints! shouldn've!
+}
+```
+
+Пример хорошего кода:
+
+```go
+func doSomething(fail bool) error {
+	if fail {
+		return &MyError{msg: "something broke"}
+	}
+	return nil // явно прописали
+}
+```
