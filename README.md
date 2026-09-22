@@ -615,16 +615,22 @@ p := Person{"John", 30}
 fmt.Println(p) // John (30), а не {John 30}
 ```
 
-Также можно написать общий интерфейс для всего, что что-то куда-то пишет:
+Также можно написать общий интерфейс для всего, что что-то куда-то пишет. Он уже реализован в пакете `io`:
 
 ```go
 type Writer interface { Write(p []byte) (n int, err error) }
 ```
 
-Тогда, реализовав метод Write() у разных структур, сможем использовать такой полиморфизм:
+Тогда, если у разных структур (os.Stdout, os.File, bytes.Buffer) реализован метод `Write()`, можем использовать такой полиморфизм:
 
 ```go
+func writeGreeting(**w io.Writer**, name string) {
+	fmt.Fprintf(w, "Hello, %s!", name)
+}
 
+writeGreeting(os.Stdout, "Alice")
+writeGreeting(os.Create("greet.txt"), "Bob")
+writeGreeting(...)
 ```
 
 Чтобы проверить тип переменной какого-то интерфейса, используем `obj.()`:
