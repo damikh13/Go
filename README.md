@@ -1,4 +1,16 @@
-# Go
+# Go Notes
+
+## Оглавление
+
+- [1. Введение](#1-введение)
+  - [1.1. Переменные](#11-переменные)
+  - [1.2. fmt.Printf](#12-fmtprintf)
+  - [1.3. if, switch](#13-if-switch)
+  - [1.4. for](#14-for)
+  - [1.5. func](#15-func)
+  - [1.6. struct](#16-struct)
+  - [1.7. interface](#17-interface)
+  - [1.8. generics](#18-generics)
 
 # 1. Введение
 
