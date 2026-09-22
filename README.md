@@ -730,6 +730,34 @@ func doSomething(fail bool) error {
 }
 ```
 
+Последний момент — интерфейсы можно объединять:
+
+```go
+type ReaderWriter ****interface {
+	Reader
+	Writer
+}
+```
+
+Только объекты, имеющие и Read(), и Write(), будут ему удовлетворять.
+
+Главное, чтобы у входящих интерфейсов не были одинаковые названия функций с разными сигнатурами:
+
+```go
+type A interface {
+    Foo() int
+}
+
+type B interface {
+    Foo() string
+}
+
+type C interface {
+    A
+    B  // ❌ compile error: duplicate method Foo with different signatures
+}
+```
+
 ## 1.8. generics
 
 Раньше, чтобы определить функцию для нескольких типов, приходилось делать несколько разных функций:
