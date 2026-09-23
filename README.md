@@ -867,12 +867,36 @@ type Number interface {
 func SumT Number T { ... }
 ```
 
-Помимо того, можно обобщать не только функции, но и структуры:
+Пример реально использующегося интерфейса — `comparable`, в который входят примитивные типы данных, указатели, статические массивы но не входят динамические массивы, хэш-таблицы и функции.
+
+Кроме обобщения функций, есть обобщение структур:
 
 ```go
-type [T Number]MyStruct struct {
-	items []T
+type FlatGrid**[T any]** struct {
+	Data       []**T**
+	Rows, Cols int
 }
+func NewFlatGrid**[T any]**(rows, cols int) *FlatGrid**[T]** {
+	return &FlatGrid**[T]**{
+		Data: make([]**T**, rows*cols),
+		Rows: rows,
+		Cols: cols,
+	}
+}
+func (fg *FlatGrid**[T]**) At(y, x int) **T** { return fg.Data[y * fg.Cols + x] }
+func (fg *FlatGrid**[T]**) Set(y, x int, val **T**) { fg.Data[y * fg.Cols + x] = val }
+func (fg *FlatGrid**[T]**) String() (output string) {
+	for i := range fg.Rows {
+		for j := range fg.Cols {
+			output += fmt.Sprintf("[%v]", fg.At(i, j))
+		}
+		output += "\n"
+	}
+	return output
+}
+
+fg := NewFlatGrid(5, 3)
+fmt.Println(fg)
 ```
 
 Особое место — пустой интерфейс.
