@@ -2,16 +2,32 @@ package main
 
 import (
 	"fmt"
+	"slices"
 )
 
-type Grid[T any] struct {
-	data []T
-	rows int
-	cols int
+type FlatGrid[T any] struct {
+	Data       []T
+	Rows, Cols int
 }
 
-func (g *Grid[T]) At(i, j int) T     { return g.data[i*g.cols+j] }
-func (g *Grid[T]) Set(i, j int, v T) { g.data[i*g.cols+j] = v }
+func NewGrid[T any](rows, cols int) *FlatGrid[T] {
+	return &FlatGrid[T]{
+		Data: make([]T, rows*cols),
+		Rows: rows,
+		Cols: cols,
+	}
+}
+func (fg *FlatGrid[T]) At(i, j int) T     { return fg.Data[i*fg.Cols+j] }
+func (fg *FlatGrid[T]) Set(i, j int, v T) { fg.Data[i*fg.Cols+j] = v }
+func (fg *FlatGrid[T]) String() (output string) {
+	for i := range fg.Rows {
+		for j := range fg.Cols {
+			output += fmt.Sprintf("[%v]", fg.At(i, j))
+		}
+		output += "\n"
+	}
+	return output
+}
 
 func main() {
 	var myArr [4]int = [4]int{1, 2, 3, 4}
@@ -67,7 +83,7 @@ func main() {
 	fmt.Println("emptySlice2 == nil:", emptySlice2 == nil)
 
 	rows := 5
-	cols := 3
+	cols := 2
 	grid1 := make([][]int, rows)
 	for i := range grid1 {
 		grid1[i] = make([]int, cols)
@@ -82,4 +98,25 @@ func main() {
 	}
 
 	fmt.Println(grid1)
+
+	grid2 := &FlatGrid[int]{
+		Data: make([]int, 5*3),
+		Rows: 5,
+		Cols: 3,
+	}
+	counter = 1
+	for i := range 5 {
+		for j := range 3 {
+			grid2.Set(i, j, counter)
+			counter++
+		}
+	}
+	fmt.Println(grid2)
+
+	sl := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	wrongSubSlice := sl[1:4]
+	subSlice := slices.Clone(sl[1:4])
+	fmt.Println("subSlice:", subSlice)
+	fmt.Println(cap(subSlice))
+	fmt.Println(cap(wrongSubSlice))
 }
