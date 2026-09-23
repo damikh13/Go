@@ -872,20 +872,20 @@ func SumT Number T { ... }
 Кроме обобщения функций, есть обобщение структур:
 
 ```go
-type FlatGrid**[T any]** struct {
-	Data       []**T**
+type FlatGrid[T any] struct {
+	Data       []T
 	Rows, Cols int
 }
-func NewFlatGrid**[T any]**(rows, cols int) *FlatGrid**[T]** {
-	return &FlatGrid**[T]**{
-		Data: make([]**T**, rows*cols),
+func NewFlatGrid[T any](rows, cols int) *FlatGrid[T] {
+	return &FlatGrid[T]{
+		Data: make([]T, rows*cols),
 		Rows: rows,
 		Cols: cols,
 	}
 }
-func (fg *FlatGrid**[T]**) At(y, x int) **T** { return fg.Data[y * fg.Cols + x] }
-func (fg *FlatGrid**[T]**) Set(y, x int, val **T**) { fg.Data[y * fg.Cols + x] = val }
-func (fg *FlatGrid**[T]**) String() (output string) {
+func (fg *FlatGrid[T]) At(y, x int) T { return fg.Data[y * fg.Cols + x] }
+func (fg *FlatGrid[T]) Set(y, x int, val T) { fg.Data[y * fg.Cols + x] = val }
+func (fg *FlatGrid[T]) String() (output string) {
 	for i := range fg.Rows {
 		for j := range fg.Cols {
 			output += fmt.Sprintf("[%v]", fg.At(i, j))
