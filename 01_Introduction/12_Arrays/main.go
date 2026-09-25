@@ -135,4 +135,7 @@ func main() {
 	slB[0] = 200
 	fmt.Println("slA:", slA)
 	fmt.Println("slB:", slB, cap(slB))
+
+	emptSlice := make([]int, 10)
+	fmt.Println(emptSlice, len(emptSlice), cap(emptSlice))
 }
