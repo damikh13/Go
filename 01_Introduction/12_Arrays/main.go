@@ -136,6 +136,8 @@ func main() {
 	fmt.Println("slA:", slA)
 	fmt.Println("slB:", slB, cap(slB))
 
-	emptSlice := make([]int, 10)
+	emptSlice := make([]int, 0)
+	fmt.Println(emptSlice == nil)
 	fmt.Println(emptSlice, len(emptSlice), cap(emptSlice))
+
 }
