@@ -119,4 +119,20 @@ func main() {
 	fmt.Println("subSlice:", subSlice)
 	fmt.Println(cap(subSlice))
 	fmt.Println(cap(wrongSubSlice))
+
+	var anotherSlice []string
+	anotherSlice = append(anotherSlice, "hey")
+	fmt.Println(anotherSlice)
+
+	for i := range 5 {
+		variable := 10
+		fmt.Println(i, variable)
+	}
+
+	slA := []int{0, 1, 2, 3, 4, 5}
+	slB := slA[1:4:4]
+	slB = append(slB, 75)
+	slB[0] = 200
+	fmt.Println("slA:", slA)
+	fmt.Println("slB:", slB, cap(slB))
 }
