@@ -1289,6 +1289,15 @@ for k, v := range mp {
 - slice’ы
 - map’ы
 
+Чтобы не использовать map map’ов для составного ключа (`map[”first name”][”second name”]`), придумали класть структурку:
+
+```go
+type CompositeKey struct {
+	Path, Country string
+}
+mp := make(map[CompositeKey]int)
+```
+
 Map’ы передаются по указателям:
 
 ```go
