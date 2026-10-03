@@ -11,6 +11,10 @@
   - [1.6. struct](#16-struct)
   - [1.7. interface](#17-interface)
   - [1.8. generics](#18-generics)
+  - [1.9. errors](#19-errors)
+  - [1.10. arrys, slices](#110-arrays-slices)
+  - [1.11. maps](#111-maps)
+  - [1.12. pointers](#112-pointers)
 
 # 1. Введение
 
