@@ -1,3 +1,3 @@
-module practice
+module learning
 
 go 1.27.1
