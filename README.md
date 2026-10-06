@@ -138,6 +138,30 @@ import "github.com/google/uuid"
 
 Есть особый пакет — **internal**. Только тот модуль, в котором он и лежит, может импортировать из него. А другой модуль уже не сможет.
 
+## 0.3. Тесты
+
+Тесты в Go: оканчиваются на _test.go. Они не компилируются в бинарник на входе `go build`.
+
+Unit-тест:
+
+```go
+package main
+
+import "testing"
+
+func TestGreet(t *testing.T) {
+	got := greet()
+	want := "Hello, World!"
+	if got != want {
+		t.Errorf("grret() = %q, want = %q", got, want)
+	}
+}
+```
+
+- t.Errorf помечает тест упавшим
+
+Запуск: go test ./...
+
 # 1. Введение
 
 Go быстро компилируется и исполняется. Проект на Java может компилитися целый час. На Go — несколько секунд.
