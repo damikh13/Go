@@ -360,7 +360,7 @@ fmt.Println(weight) // ошибка! нет такой
 
 ```
 
-Есть switch’и. В них тоже есть локальная инициализация:
+В switch тоже есть локальная инициализация:
 
 ```go
 switch x := 10; {
@@ -370,6 +370,8 @@ default:
 	fmt.Println("small")
 }
 ```
+
+- switch без условия. Применяют, чтобы не писать много-много if else … { … } if else …
 
 ```go
 switch day := "alskdjasld"; day {
