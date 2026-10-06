@@ -254,6 +254,18 @@ fmt.Println(Wednesday) // 2
 a, b = b, a
 ```
 
+Иногда определяют кастомные типы данных, чтобы запретить операции:
+
+```go
+type OrderID int64
+type UserID int64
+
+var oid OrderID = 11
+var uid UserID = 22
+
+fmt.Println(oid + uid) // нельзя!
+```
+
 Определить тип переменной можно при помощи:
 
 ```go
