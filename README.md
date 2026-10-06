@@ -1367,7 +1367,7 @@ if !ok {
 
 Есть несколько стандартных методов пакета `maps`:
 
-- `maps.Keys(m)`
+- `maps.Keys(m)` ← возвращает итератор! Или проходимся по нему через range, или `keys := slices.Collect(maps.Keys(mp))`
 - `maps.Values(m)`
 - `maps.Clone(m)`
 - `maps.Equal(m1, m2)`
