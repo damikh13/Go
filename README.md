@@ -22,6 +22,7 @@
 - [2. Параллельность](#2-параллельность)
 - [2.1. Введение: проблемы параллельности, почему Go хорош в этом контексте](#21-введение-проблемы-параллельности-почему-go-хорош-в-этом-контексте)
 - [2.2. Горутины](#22-горутины)
+- [2.3. sync.WaitGroup](#23-syncwaitgroup)
 
 # 0. Среда Go
 
@@ -1883,3 +1884,90 @@ var wg sync.WaitGroup
 Там используется тот факт, что горутины не чистятся сборщиком мусора: если она каким-то образом навсегда зависла, то она так и будет висеть, пока не завершится процесс программы.
 
 Помимо веса, у них также быстро работает смена контекста — когда запоминается и откладывается внутреннее состояние функции, чтобы начала выполняться другая. Она работает в 6-7 раз быстрее (на 92%, говорит книжка), чем у потоков ОС.
+
+## 2.3. sync.WaitGroup
+
+Основная задача — дождаться завершения всех горутин из группы.
+
+Используем, когда нам или неважен результат работы горутины, или есть какой-то особый способ этот результат забрать.
+
+Во всех остальных случаях лучше использовать не горутины, а каналы!
+
+Старый способ:
+
+```go
+func main() {
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		fmt.Println("1st goroutine is doing smt that takes ~ 1 sec")
+		time.Sleep(1 * time.Second)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		fmt.Println("2nd goroutine is doing smt that takes ~ 0.5 sec")
+		time.Sleep(500 * time.Millisecond)
+	}()
+
+	wg.Wait()
+	fmt.Println("code after wg.Wait()")
+}
+
+```
+
+Новый (Go 1.25+) — wg.Go(func() {…})
+
+```go
+func main() {
+	var wg sync.WaitGroup
+
+	wg.Go(func() {
+		fmt.Println(...)
+		time.Sleep(1 * time.Second)
+	})
+
+	wg.Go(func() {
+		fmt.Println(...)
+		time.Sleep(500 * time.Milliseconds)
+	})
+
+	wg.Wait()
+	fmt.Println("code after wg.Wait()")
+}
+```
+
+- для передачи параметров используется анонимная функция-обёртка
+
+Есть следующее различие в аргументах замыканий:
+
+`go f(x)` — аргументы вычисляются в момент, когда программа дошла до этой строчки
+
+`go func() { … x … }()` или `wg.Go(func() { … x … })` — аргументы вычисляются в момент реального исполнения горутины
+
+Ниже пример того, что стоит передавать `wg` по указателю (или использовать wg.Go()):
+
+```go
+helloOldStyle := func(wg *sync.WaitGroup, id int) {
+	defer wg.Done()
+	fmt.Printf("hello from %v (old)\n", id)
+}
+helloNewGen := func(id int) {
+	fmt.Printf("hello from %v (new)\n", id)
+}
+numfOfCalls := 5
+for i := range numfOfCalls {
+	wg.Add(1)
+	helloOldStyle(&wg, i+1)
+
+	wg.Go(func() { helloNewGen(i + 1) })
+}
+wg.Wait()
+
+```
+
+- можно переиспользовать wg после Wait’а, необязательно создавать новую!
+- for i работает штатно (Go 1.22+)
