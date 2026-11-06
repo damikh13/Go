@@ -10,23 +10,6 @@ import (
 func main() {
 	wgOfTwoExample()
 	printSeparator('-', 40)
-
-	var wg sync.WaitGroup
-	helloOldStyle := func(wg *sync.WaitGroup, id int) {
-		defer wg.Done()
-		fmt.Printf("hello from %v (old)\n", id)
-	}
-	helloNewGen := func(id int) {
-		fmt.Printf("hello from %v (new)\n", id)
-	}
-	numfOfCalls := 5
-	for i := range numfOfCalls {
-		wg.Add(1)
-		helloOldStyle(&wg, i+1)
-		wg.Go(func() { helloNewGen(i + 1) })
-	}
-	wg.Wait()
-	fmt.Println("code after Wait()")
 }
 
 func wgOfTwoExample() {
