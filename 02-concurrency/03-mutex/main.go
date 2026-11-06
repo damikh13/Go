@@ -6,6 +6,10 @@ import (
 )
 
 func main() {
+	incrementsDecrementsExample()
+}
+
+func incrementsDecrementsExample() {
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var value int
@@ -14,22 +18,19 @@ func main() {
 		mu.Lock()
 		defer mu.Unlock()
 		value++
-		fmt.Printf("incrementing: %v\n", value)
 	}
+
 	decrement := func() {
 		mu.Lock()
 		defer mu.Unlock()
 		value--
-		fmt.Printf("decrementing: %v\n", value)
 	}
 
 	for range 5 {
 		wg.Go(increment)
-	}
-	for range 5 {
 		wg.Go(decrement)
 	}
 
 	wg.Wait()
-	fmt.Printf("the result after all arithmetics: %v\n", value)
+	fmt.Printf("result after all increments & decrements: %v\n", value) // 0
 }
