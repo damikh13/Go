@@ -64,8 +64,90 @@ for _, r := range results { // 10, 20, ..., 50
 }
 ```
 
-Работа = <- indicesCH
+Работа = <- jobs
 
 ```go
+input := []int{1, 2, 3, 4, 5}
+N := 9
+jobs := make(chan int)
+results := make([]int, N)
+var wg sync.WaitGroup
+```
 
+```go
+for range 3 {
+	wg.Go(func() {
+		for j := range jobs {
+			results[j] = input[j] * 10
+		}
+	})
+}
+```
+
+```go
+for j := range N {
+	jobs <- j
+}
+close(jobs)
+```
+
+```go
+wg.Wait()
+
+for i, v := range results {
+	fmt.Printf("results[%v] = %v.\n", i, v)
+}
+```
+
+Можем прикрутить контекст к последнему примеру. Будем проверять, отменён ли контекст. В случае, если отменён, выдача задач прекратится.
+
+```go
+func process(ctx context.Context, workersNum int, input []int, fn func(context.Context, int) int) ([]int, error) {
+	results := make([]int, len(input))
+	jobs := make(chan int) // индексы
+	var wg sync.WaitGroup
+
+	for range workersNum {
+		wg.Go(func() {
+			for j := range jobs {
+				results[j] = fn(ctx, input[j])
+			}
+		})
+	}
+
+feed:
+	for idx := range input {
+		if err := ctx.Err(); err != nil {
+			break
+		}
+
+		select {
+		case jobs <- idx:
+		case <-ctx.Done():
+			break feed
+		}
+	}
+	close(jobs)
+
+	wg.Wait()
+	return out, ctx.Err()
+}
+```
+
+Такая проверка нужна в случае, если одновременно отменился контекст и воркер стал готов читать, чтобы не гадать с тем, что рандомно выберет select:
+
+```go
+if err := ctx.Err(); err != nil {
+	break
+}
+```
+
+Или отменён контекст (в этом случае прекращаем выдачу), или пришёл воркер, готовый принять задачу:
+
+```go
+select {
+case jobs <-idx:
+case <-ctx.Done():
+	break feed
+}
 ```
